@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stockholm Syndrome Self-Evaluation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #7F77DD;
+      --accent-light: #EEEDFE;
+      --accent-dark: #3C3489;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --bg-tertiary: #efefed;
+      --text-primary: #1a1a18;
+      --text-secondary: #6b6b68;
+      --text-tertiary: #9b9b98;
+      --border-tertiary: rgba(0,0,0,0.12);
+      --border-secondary: rgba(0,0,0,0.22);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1e1e1c;
+        --bg-secondary: #2a2a28;
+        --bg-tertiary: #242422;
+        --text-primary: #f0ede8;
+        --text-secondary: #a8a8a4;
+        --text-tertiary: #6e6e6a;
+        --border-tertiary: rgba(255,255,255,0.10);
+        --border-secondary: rgba(255,255,255,0.18);
+        --accent-light: #2a2860;
+        --accent-dark: #b0aaf5;
+      }
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .lang-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .lang-btn {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-secondary);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-sans);
+    }
+
+    .lang-btn.active,
+    .lang-btn:hover {
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      border-color: var(--accent);
+    }
+
+    .header {
+      margin-bottom: 1.5rem;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .progress-wrap {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border-tertiary);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    .question-card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-tertiary);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .q-num {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+
+    .q-text {
+      font-size: 15px;
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-tertiary);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 14px;
+      color: var(--text-primary);
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-family: var(--font-sans);
+    }
+
+    .opt:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .opt.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent-dark);
+    }
+
+    .opt-radio {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-secondary);
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .opt.selected .opt-radio {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .opt.selected .opt-radio::after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      padding: 8px 20px;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-sans);
+      background: transparent;
+      color: var(--text-primary);
+    }
+
+    .btn:hover {
+      background: var(--bg-secondary);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .result {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-tertiary);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+
+    .score-ring {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      display: block;
+    }
+
+    .score-num {
+      font-size: 28px;
+      font-weight: 500;
+      text-align: center;
+      color: var(--text-primary);
+    }
+
+    .score-num span {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .score-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .result-level {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .result-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .breakdown {
+      margin: 1rem 0;
+    }
+
+    .breakdown-title {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .bar-label {
+      min-width: 140px;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    .bar-bg {
+      flex: 1;
+      height: 6px;
+      background: var(--border-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .bar-val {
+      min-width: 28px;
+      color: var(--text-tertiary);
+      font-size: 11px;
+    }
+
+    .disclaimer {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      border-top: 0.5px solid var(--border-tertiary);
+      padding-top: 1rem;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    .restart-wrap {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .invisible { visibility: hidden; }
+
+    @media (max-width: 480px) {
+      body { padding: 1rem 0.75rem; }
+      .bar-label { min-width: 100px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="lang-bar" id="langBar"></div>
+  <div class="header">
+    <h1 id="headerTitle"></h1>
+    <p id="headerSubtitle"></p>
+  </div>
+  <div id="quizArea"></div>
+</div>
+
+<script>
+/* ─── Language data ─────────────────────────────────────────────────────── */
+const LANGS = {
+  en: {
+    name: "English",
+    title: "Stockholm Syndrome self-evaluation",
+    subtitle: "Answer honestly. There are no right or wrong answers — only your experience matters.",
+    qLabel: "Question", of: "of",
+    next: "Next →", prev: "← Back", submit: "See results", restart: "Start over",
+    progress: (c,t) => `${c} of ${t} answered`,
+    opts: ["Never","Sometimes","Often","Always or almost always"],
+    levels: ["Minimal concern","Low concern","Moderate concern","High concern"],
+    levelDescs: [
+      "Your responses don't suggest significant indicators of Stockholm Syndrome dynamics. However, all relationships deserve mutual respect.",
+      "Some mild indicators are present. Reflect on how power and care are balanced in your close relationships.",
+      "Several notable indicators are present. Consider speaking with a trusted person or mental health professional about your experiences.",
+      "Multiple strong indicators are present. Please consider reaching out to a counselor or support line — your wellbeing matters."
+    ],
+    scoreLabel: "out of 30",
+    breakdown: "Category breakdown",
+    disclaimer: "This quiz is for educational purposes only. It is not a clinical diagnostic tool. If you are in distress, please contact a mental health professional or a support helpline in your country.",
+    categories: { attachment:"Trauma bonding", rationalization:"Rationalization", isolation:"Isolation", empathy:"Captor empathy", selfsuppression:"Self-suppression" },
+    questions: [
+      { id:1, cat:"attachment",      text:"I feel a strong emotional bond with someone who has hurt or controlled me." },
+      { id:2, cat:"rationalization", text:"I often find myself making excuses for the harmful behavior of someone close to me." },
+      { id:3, cat:"empathy",         text:"I feel more concern for the well-being of someone who mistreats me than for my own." },
+      { id:4, cat:"isolation",       text:"I feel cut off from friends, family, or support networks because of a relationship." },
+      { id:5, cat:"selfsuppression", text:"I suppress my own feelings or needs to avoid upsetting someone who has power over me." },
+      { id:6, cat:"rationalization", text:"I believe that deep down, the person who hurts me actually cares about me." },
+      { id:7, cat:"attachment",      text:"I feel afraid to leave or distance myself from a relationship, even when it feels unsafe." },
+      { id:8, cat:"empathy",         text:"I feel grateful toward someone who provides my basic needs even when they also harm me." },
+      { id:9, cat:"isolation",       text:"I hide details of my relationship from others because I fear judgment or disbelief." },
+      { id:10,cat:"selfsuppression", text:"I feel my identity, opinions, or values have changed to match those of someone who controls me." },
+    ]
+  },
+
+  uk: {
+    name: "Українська",
+    title: "Самооцінка синдрому Стокгольму",
+    subtitle: "Відповідайте чесно. Тут немає правильних або неправильних відповідей — важливий лише ваш досвід.",
+    qLabel: "Питання", of: "з",
+    next: "Далі →", prev: "← Назад", submit: "Переглянути результати", restart: "Почати знову",
+    progress: (c,t) => `${c} з ${t} відповіли`,
+    opts: ["Ніколи","Іноді","Часто","Завжди або майже завжди"],
+    levels: ["Мінімальний ризик","Низький рівень","Помірний рівень","Високий рівень"],
+    levelDescs: [
+      "Ваші відповіді не свідчать про значні ознаки синдрому Стокгольму. Проте кожні стосунки заслуговують на взаємоповагу.",
+      "Є деякі незначні ознаки. Поміркуйте, як у ваших стосунках розподілені влада та турбота.",
+      "Виявлено кілька помітних ознак. Розгляньте можливість поговорити з довіреною людиною або фахівцем з психічного здоров'я.",
+      "Виявлено кілька сильних ознак. Будь ласка, зверніться до консультанта або лінії підтримки — ваше благополуччя важливе."
+    ],
+    scoreLabel: "з 30",
+    breakdown: "Розбивка за категоріями",
+    disclaimer: "Цей тест має лише освітнє призначення. Він не є клінічним діагностичним інструментом. Якщо вам важко, зверніться до фахівця з психічного здоров'я або на лінію підтримки у вашій країні.",
+    categories: { attachment:"Травматична прив'язаність", rationalization:"Раціоналізація", isolation:"Ізоляція", empathy:"Емпатія до кривдника", selfsuppression:"Самопригнічення" },
+    questions: [
+      { id:1, cat:"attachment",      text:"Я відчуваю сильний емоційний зв'язок з людиною, яка мене скривдила або контролювала." },
+      { id:2, cat:"rationalization", text:"Я часто виправдовую шкідливу поведінку близької мені людини." },
+      { id:3, cat:"empathy",         text:"Я більше турбуюся про благополуччя людини, яка зі мною погано поводиться, ніж про своє власне." },
+      { id:4, cat:"isolation",       text:"Я відчуваю себе відрізаним(-ою) від друзів, сім'ї або соціальної підтримки через певні стосунки." },
+      { id:5, cat:"selfsuppression", text:"Я пригнічую власні почуття або потреби, щоб не засмутити людину, яка має владу наді мною." },
+      { id:6, cat:"rationalization", text:"Я вважаю, що в глибині душі людина, яка мене кривдить, насправді мене любить." },
+      { id:7, cat:"attachment",      text:"Я боюся залишити або відсторонитися від стосунків, навіть якщо вони здаються небезпечними." },
+      { id:8, cat:"empathy",         text:"Я вдячний(-а) людині, яка задовольняє мої базові потреби, навіть якщо вона також завдає мені шкоди." },
+      { id:9, cat:"isolation",       text:"Я приховую деталі своїх стосунків від інших, бо боюся осуду або нерозуміння." },
+      { id:10,cat:"selfsuppression", text:"Я відчуваю, що моя особистість, погляди або цінності змінилися, щоб відповідати тому, хто мене контролює." },
+    ]
+  },
+
+
+  ru: {
+    name: "Русский",
+    title: "Самооценка стокгольмского синдрома",
+    subtitle: "Отвечайте честно. Здесь нет правильных или неправильных ответов — важен только ваш опыт.",
+    qLabel: "Вопрос", of: "из",
+    next: "Далее →", prev: "← Назад", submit: "Посмотреть результаты", restart: "Начать заново",
+    progress: (c,t) => `${c} из ${t} отвечено`,
+    opts: ["Никогда","Иногда","Часто","Всегда или почти всегда"],
+    levels: ["Минимальный риск","Низкий уровень","Умеренный уровень","Высокий уровень"],
+    levelDescs: [
+      "Ваши ответы не указывают на выраженные признаки подобных динамик. Однако любые отношения должны строиться на взаимном уважении.",
+      "Есть отдельные слабые признаки. Подумайте, как в ваших отношениях распределяются забота и влияние.",
+      "Есть несколько заметных признаков. Рассмотрите возможность поговорить с близким человеком или специалистом.",
+      "Есть несколько выраженных признаков. Пожалуйста, подумайте о том, чтобы обратиться к консультанту или на линию поддержки — ваше благополучие важно."
+    ],
+    scoreLabel: "из 30",
+    breakdown: "Разбивка по категориям",
+    disclaimer: "Этот тест носит только образовательный характер. Он не является клиническим диагностическим инструментом. Если вам тяжело, обратитесь к специалисту по психическому здоровью или на линию поддержки.",
+    categories: { attachment:"Травматическая привязанность", rationalization:"Рационализация", isolation:"Изоляция", empathy:"Эмпатия к обидчику", selfsuppression:"Подавление себя" },
+    questions: [
+      { id:1, cat:"attachment",      text:"Я чувствую сильную эмоциональную связь с человеком, который причинял мне боль или контролировал меня." },
+      { id:2, cat:"rationalization", text:"Я часто нахожу оправдания вредному поведению близкого мне человека." },
+      { id:3, cat:"empathy",         text:"Я больше переживаю о благополучии человека, который плохо со мной обращается, чем о собственном." },
+      { id:4, cat:"isolation",       text:"Из-за отношений я чувствую себя отрезанным(-ой) от друзей, семьи или поддержки." },
+      { id:5, cat:"selfsuppression", text:"Я подавляю свои чувства или потребности, чтобы не расстроить человека, имеющего надо мной власть." },
+      { id:6, cat:"rationalization", text:"Я верю, что в глубине души человек, который причиняет мне боль, на самом деле заботится обо мне." },
+      { id:7, cat:"attachment",      text:"Я боюсь уйти или дистанцироваться от отношений, даже если они кажутся небезопасными." },
+      { id:8, cat:"empathy",         text:"Я благодарен(-на) человеку, который обеспечивает мои базовые нужды, даже если он также причиняет вред." },
+      { id:9, cat:"isolation",       text:"Я скрываю детали своих отношений от других, потому что боюсь осуждения или недоверия." },
+      { id:10,cat:"selfsuppression", text:"Я чувствую, что моя личность, взгляды или ценности изменились, чтобы соответствовать человеку, который меня контролирует." },
+    ]
+  },
+
+  de: {
+    name: "Deutsch",
+    title: "Selbsteinschätzung: Stockholm-Syndrom",
+    subtitle: "Antworten Sie ehrlich. Es gibt keine richtigen oder falschen Antworten — nur Ihre Erfahrung zählt.",
+    qLabel: "Frage", of: "von",
+    next: "Weiter →", prev: "← Zurück", submit: "Ergebnisse anzeigen", restart: "Neu starten",
+    progress: (c,t) => `${c} von ${t} beantwortet`,
+    opts: ["Nie","Manchmal","Oft","Immer oder fast immer"],
+    levels: ["Minimales Risiko","Geringes Risiko","Mittleres Risiko","Hohes Risiko"],
+    levelDescs: [
+      "Ihre Antworten zeigen keine deutlichen Anzeichen eines Stockholm-Syndroms. Trotzdem verdienen alle Beziehungen gegenseitigen Respekt.",
+      "Einige leichte Anzeichen sind vorhanden. Reflektieren Sie, wie Macht und Fürsorge in Ihren engen Beziehungen verteilt sind.",
+      "Mehrere auffällige Anzeichen sind vorhanden. Erwägen Sie, mit einer Vertrauensperson oder einem Fachmann für psychische Gesundheit zu sprechen.",
+      "Mehrere starke Anzeichen sind vorhanden. Bitte wenden Sie sich an einen Berater oder eine Krisenhotline — Ihr Wohlbefinden ist wichtig."
+    ],
+    scoreLabel: "von 30",
+    breakdown: "Kategorie-Aufschlüsselung",
+    disclaimer: "Dieser Test dient nur zu Bildungszwecken. Er ist kein klinisches Diagnosewerkzeug. Wenn Sie in Not sind, wenden Sie sich bitte an einen Psychologen oder eine Krisenhotline.",
+    categories: { attachment:"Trauma-Bindung", rationalization:"Rationalisierung", isolation:"Isolation", empathy:"Täter-Empathie", selfsuppression:"Selbstunterdrückung" },
+    questions: [
+      { id:1, cat:"attachment",      text:"Ich fühle eine starke emotionale Bindung zu jemandem, der mir geschadet oder mich kontrolliert hat." },
+      { id:2, cat:"rationalization", text:"Ich finde mich oft dabei, das schädliche Verhalten einer mir nahestehenden Person zu entschuldigen." },
+      { id:3, cat:"empathy",         text:"Ich sorge mich mehr um das Wohlbefinden einer Person, die mich schlecht behandelt, als um mein eigenes." },
+      { id:4, cat:"isolation",       text:"Ich fühle mich durch eine Beziehung von Freunden, Familie oder sozialer Unterstützung abgeschnitten." },
+      { id:5, cat:"selfsuppression", text:"Ich unterdrücke meine eigenen Gefühle oder Bedürfnisse, um jemanden nicht zu verärgern, der Macht über mich hat." },
+      { id:6, cat:"rationalization", text:"Ich glaube, dass die Person, die mir schadet, im Grunde genommen doch für mich sorgt." },
+      { id:7, cat:"attachment",      text:"Ich habe Angst, eine Beziehung zu verlassen oder mich zu distanzieren, auch wenn sie sich unsicher anfühlt." },
+      { id:8, cat:"empathy",         text:"Ich bin dankbar gegenüber jemandem, der meine Grundbedürfnisse erfüllt, auch wenn er mir gleichzeitig schadet." },
+      { id:9, cat:"isolation",       text:"Ich verberge Details meiner Beziehung vor anderen, weil ich Verurteilung oder Unglaube fürchte." },
+      { id:10,cat:"selfsuppression", text:"Ich habe das Gefühl, dass meine Identität, Meinungen oder Werte sich verändert haben, um denen zu entsprechen, der mich kontrolliert." },
+    ]
+  },
+
+  es: {
+    name: "Español",
+    title: "Autoevaluación: Síndrome de Estocolmo",
+    subtitle: "Responda honestamente. No hay respuestas correctas o incorrectas — solo importa su experiencia.",
+    qLabel: "Pregunta", of: "de",
+    next: "Siguiente →", prev: "← Atrás", submit: "Ver resultados", restart: "Volver a empezar",
+    progress: (c,t) => `${c} de ${t} respondidas`,
+    opts: ["Nunca","A veces","A menudo","Siempre o casi siempre"],
+    levels: ["Riesgo mínimo","Riesgo bajo","Riesgo moderado","Riesgo alto"],
+    levelDescs: [
+      "Sus respuestas no sugieren indicadores significativos del Síndrome de Estocolmo. Sin embargo, todas las relaciones merecen respeto mutuo.",
+      "Hay algunos indicadores leves. Reflexione sobre cómo se equilibran el poder y el cuidado en sus relaciones cercanas.",
+      "Hay varios indicadores notables. Considere hablar con alguien de confianza o con un profesional de salud mental.",
+      "Hay múltiples indicadores fuertes. Por favor, considere comunicarse con un consejero o una línea de apoyo — su bienestar importa."
+    ],
+    scoreLabel: "de 30",
+    breakdown: "Desglose por categoría",
+    disclaimer: "Este cuestionario tiene fines educativos únicamente. No es una herramienta diagnóstica clínica. Si está en crisis, comuníquese con un profesional de salud mental o una línea de apoyo en su país.",
+    categories: { attachment:"Vínculo traumático", rationalization:"Racionalización", isolation:"Aislamiento", empathy:"Empatía al agresor", selfsuppression:"Autosupresión" },
+    questions: [
+      { id:1, cat:"attachment",      text:"Siento un fuerte vínculo emocional con alguien que me ha hecho daño o me ha controlado." },
+      { id:2, cat:"rationalization", text:"Con frecuencia me encuentro justificando el comportamiento dañino de alguien cercano a mí." },
+      { id:3, cat:"empathy",         text:"Me preocupo más por el bienestar de alguien que me trata mal que por el mío propio." },
+      { id:4, cat:"isolation",       text:"Me siento separado(-a) de amigos, familia o redes de apoyo debido a una relación." },
+      { id:5, cat:"selfsuppression", text:"Suprimo mis propios sentimientos o necesidades para no molestar a alguien que tiene poder sobre mí." },
+      { id:6, cat:"rationalization", text:"Creo que en el fondo, la persona que me hace daño realmente se preocupa por mí." },
+      { id:7, cat:"attachment",      text:"Tengo miedo de dejar o distanciarme de una relación, incluso cuando se siente insegura." },
+      { id:8, cat:"empathy",         text:"Me siento agradecido(-a) con alguien que cubre mis necesidades básicas, aunque también me haga daño." },
+      { id:9, cat:"isolation",       text:"Oculto detalles de mi relación a los demás porque temo que me juzguen o no me crean." },
+      { id:10,cat:"selfsuppression", text:"Siento que mi identidad, opiniones o valores han cambiado para coincidir con los de alguien que me controla." },
+    ]
+  },
+
+  fr: {
+    name: "Français",
+    title: "Auto-évaluation : Syndrome de Stockholm",
+    subtitle: "Répondez honnêtement. Il n'y a pas de bonnes ou de mauvaises réponses — seule votre expérience compte.",
+    qLabel: "Question", of: "sur",
+    next: "Suivant →", prev: "← Retour", submit: "Voir les résultats", restart: "Recommencer",
+    progress: (c,t) => `${c} sur ${t} répondues`,
+    opts: ["Jamais","Parfois","Souvent","Toujours ou presque toujours"],
+    levels: ["Préoccupation minimale","Faible préoccupation","Préoccupation modérée","Préoccupation élevée"],
+    levelDescs: [
+      "Vos réponses ne suggèrent pas d'indicateurs significatifs du syndrome de Stockholm. Cependant, toutes les relations méritent un respect mutuel.",
+      "Quelques indicateurs légers sont présents. Réfléchissez à l'équilibre entre le pouvoir et le soin dans vos relations proches.",
+      "Plusieurs indicateurs notables sont présents. Envisagez d'en parler à une personne de confiance ou à un professionnel de la santé mentale.",
+      "Plusieurs indicateurs forts sont présents. Veuillez envisager de contacter un conseiller ou une ligne d'assistance — votre bien-être est important."
+    ],
+    scoreLabel: "sur 30",
+    breakdown: "Répartition par catégorie",
+    disclaimer: "Ce questionnaire est uniquement à des fins éducatives. Ce n'est pas un outil de diagnostic clinique. Si vous êtes en détresse, veuillez contacter un professionnel de la santé mentale ou une ligne d'assistance dans votre pays.",
+    categories: { attachment:"Lien traumatique", rationalization:"Rationalisation", isolation:"Isolement", empathy:"Empathie envers l'agresseur", selfsuppression:"Auto-suppression" },
+    questions: [
+      { id:1, cat:"attachment",      text:"Je ressens un fort lien émotionnel avec quelqu'un qui m'a blessé ou contrôlé." },
+      { id:2, cat:"rationalization", text:"Je me retrouve souvent à excuser le comportement nuisible d'une personne qui m'est proche." },
+      { id:3, cat:"empathy",         text:"Je me soucie davantage du bien-être de quelqu'un qui me maltraite que du mien." },
+      { id:4, cat:"isolation",       text:"Je me sens coupé(e) de mes amis, de ma famille ou de mes réseaux de soutien à cause d'une relation." },
+      { id:5, cat:"selfsuppression", text:"Je supprime mes propres sentiments ou besoins pour ne pas contrarier quelqu'un qui a du pouvoir sur moi." },
+      { id:6, cat:"rationalization", text:"Je crois qu'au fond, la personne qui me blesse se soucie vraiment de moi." },
+      { id:7, cat:"attachment",      text:"J'ai peur de quitter ou de prendre mes distances dans une relation, même quand elle me semble dangereuse." },
+      { id:8, cat:"empathy",         text:"Je suis reconnaissant(e) envers quelqu'un qui subvient à mes besoins de base, même s'il me nuit aussi." },
+      { id:9, cat:"isolation",       text:"Je cache les détails de ma relation aux autres parce que je crains d'être jugé(e) ou de ne pas être cru(e)." },
+      { id:10,cat:"selfsuppression", text:"J'ai l'impression que mon identité, mes opinions ou mes valeurs ont changé pour correspondre à celles de quelqu'un qui me contrôle." },
+    ]
+  },
+
+  pt: {
+    name: "Português",
+    title: "Autoavaliação: Síndrome de Estocolmo",
+    subtitle: "Responda honestamente. Não há respostas certas ou erradas — apenas a sua experiência importa.",
+    qLabel: "Pergunta", of: "de",
+    next: "Próximo →", prev: "← Voltar", submit: "Ver resultados", restart: "Recomeçar",
+    progress: (c,t) => `${c} de ${t} respondidas`,
+    opts: ["Nunca","Às vezes","Com frequência","Sempre ou quase sempre"],
+    levels: ["Preocupação mínima","Baixa preocupação","Preocupação moderada","Alta preocupação"],
+    levelDescs: [
+      "Suas respostas não sugerem indicadores significativos da Síndrome de Estocolmo. No entanto, todos os relacionamentos merecem respeito mútuo.",
+      "Alguns indicadores leves estão presentes. Reflita sobre como o poder e o cuidado estão equilibrados nos seus relacionamentos próximos.",
+      "Vários indicadores notáveis estão presentes. Considere conversar com alguém de confiança ou um profissional de saúde mental.",
+      "Múltiplos indicadores fortes estão presentes. Por favor, considere entrar em contato com um conselheiro ou uma linha de apoio — o seu bem-estar importa."
+    ],
+    scoreLabel: "de 30",
+    breakdown: "Distribuição por categoria",
+    disclaimer: "Este questionário é apenas para fins educacionais. Não é uma ferramenta de diagnóstico clínico. Se estiver em sofrimento, entre em contato com um profissional de saúde mental ou uma linha de apoio no seu país.",
+    categories: { attachment:"Vínculo traumático", rationalization:"Racionalização", isolation:"Isolamento", empathy:"Empatia pelo agressor", selfsuppression:"Auto-supressão" },
+    questions: [
+      { id:1, cat:"attachment",      text:"Sinto um forte vínculo emocional com alguém que me magoou ou controlou." },
+      { id:2, cat:"rationalization", text:"Frequentemente me pego justificando o comportamento prejudicial de alguém próximo a mim." },
+      { id:3, cat:"empathy",         text:"Preocupo-me mais com o bem-estar de alguém que me maltrata do que com o meu próprio." },
+      { id:4, cat:"isolation",       text:"Sinto-me afastado(a) de amigos, família ou redes de apoio por causa de um relacionamento." },
+      { id:5, cat:"selfsuppression", text:"Suprimo meus próprios sentimentos ou necessidades para não perturbar alguém que tem poder sobre mim." },
+      { id:6, cat:"rationalization", text:"Acredito que, no fundo, a pessoa que me machuca realmente se importa comigo." },
+      { id:7, cat:"attachment",      text:"Tenho medo de deixar ou me distanciar de um relacionamento, mesmo quando parece inseguro." },
+      { id:8, cat:"empathy",         text:"Sinto-me grato(a) a alguém que supre minhas necessidades básicas, mesmo que também me machuque." },
+      { id:9, cat:"isolation",       text:"Escondo detalhes do meu relacionamento de outras pessoas porque temo ser julgado(a) ou não acreditado(a)." },
+      { id:10,cat:"selfsuppression", text:"Sinto que minha identidade, opiniões ou valores mudaram para corresponder aos de alguém que me controla." },
+    ]
+  }
+};
+
+/* ─── State ──────────────────────────────────────────────────────────────── */
+let lang = 'en';
+let current = 0;
+let answers = {};
+
+/* ─── Helpers ────────────────────────────────────────────────────────────── */
+function L() { return LANGS[lang]; }
+
+function getScore() {
+  return L().questions.reduce((s, q) => s + (answers[q.id] || 0), 0);
+}
+
+function getCatScores() {
+  const cats = {};
+  L().questions.forEach(q => {
+    cats[q.cat] = (cats[q.cat] || 0) + (answers[q.id] || 0);
+  });
+  return cats;
+}
+
+/* ─── Render ─────────────────────────────────────────────────────────────── */
+function renderLangBar() {
+  document.getElementById('langBar').innerHTML = Object.keys(LANGS).map(k =>
+    `<button class="lang-btn${lang === k ? ' active' : ''}" onclick="switchLang('${k}')">${LANGS[k].name}</button>`
+  ).join('');
+}
+
+function updateHeader() {
+  document.getElementById('headerTitle').textContent = L().title;
+  document.getElementById('headerSubtitle').textContent = L().subtitle;
+}
+
+function render() {
+  updateHeader();
+  const qs = L().questions;
+  const answered = Object.keys(answers).length;
+  const finished = current >= qs.length && answered === qs.length;
+
+  if (finished) { renderResult(); return; }
+
+  const q = qs[Math.min(current, qs.length - 1)];
+  const pct = (current / qs.length) * 100;
+  const isLast = current === qs.length - 1;
+
+  document.getElementById('quizArea').innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-label">${L().progress(answered, qs.length)}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="question-card">
+      <div class="q-num">${L().qLabel} ${q.id} ${L().of} ${qs.length}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="options">
+        ${L().opts.map((lbl, v) => `
+          <button class="opt${answers[q.id] === v ? ' selected' : ''}" onclick="selectAnswer(${q.id}, ${v})">
+            <div class="opt-radio"></div>
+            <span>${lbl}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn${current === 0 ? ' invisible' : ''}" onclick="goBack()">${L().prev}</button>
+      <button class="btn btn-primary" onclick="goNext()" ${answers[q.id] === undefined ? 'disabled' : ''}>
+        ${isLast ? L().submit : L().next}
+      </button>
+    </div>
+  `;
+}
+
+function renderResult() {
+  const score = getScore();
+  const max = 30;
+  const pct = Math.round((score / max) * 100);
+  const lvl = score <= 7 ? 0 : score <= 14 ? 1 : score <= 21 ? 2 : 3;
+  const colors = ['#1D9E75', '#378ADD', '#BA7517', '#D85A30'];
+  const color = colors[lvl];
+  const catScores = getCatScores();
+  const cats = L().categories;
+
+  const r = 34, cx = 40, cy = 40;
+  const circ = +(2 * Math.PI * r).toFixed(2);
+  const dash = +((circ * pct) / 100).toFixed(2);
+  const offset = +(circ / 4).toFixed(2);
+
+  document.getElementById('quizArea').innerHTML = `
+    <div class="result">
+      <svg class="score-ring" viewBox="0 0 80 80" aria-hidden="true">
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border-tertiary)" stroke-width="6"/>
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+          stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${offset}"
+          stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>
+        <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-size="14" font-weight="500" fill="${color}">${score}</text>
+      </svg>
+      <div class="score-num">${score} <span>${L().scoreLabel}</span></div>
+      <div class="score-label">${pct}%</div>
+      <div class="result-level" style="color:${color}">${L().levels[lvl]}</div>
+      <div class="result-desc">${L().levelDescs[lvl]}</div>
+      <div class="breakdown">
+        <div class="breakdown-title">${L().breakdown}</div>
+        ${Object.keys(cats).map(k => {
+          const s = catScores[k] || 0;
+          const w = Math.round((s / 6) * 100);
+          return `<div class="bar-row">
+            <div class="bar-label">${cats[k]}</div>
+            <div class="bar-bg"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div>
+            <div class="bar-val">${s}/6</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="restart-wrap">
+        <button class="btn btn-primary" onclick="restartQuiz()">${L().restart}</button>
+      </div>
+      <div class="disclaimer">${L().disclaimer}</div>
+    </div>
+  `;
+}
+
+/* ─── Actions ────────────────────────────────────────────────────────────── */
+function switchLang(l) {
+  lang = l;
+  renderLangBar();
+  render();
+}
+
+function selectAnswer(qid, val) {
+  answers[qid] = val;
+  render();
+}
+
+function goNext() {
+  const qs = L().questions;
+  if (answers[qs[current].id] === undefined) return;
+  if (current < qs.length - 1) { current++; render(); }
+  else if (Object.keys(answers).length === qs.length) { current = qs.length; render(); }
+}
+
+function goBack() {
+  if (current > 0) { current--; render(); }
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = {};
+  render();
+}
+
+/* ─── Boot ───────────────────────────────────────────────────────────────── */
+renderLangBar();
+render();
+</script>
+</body>
+</html>
